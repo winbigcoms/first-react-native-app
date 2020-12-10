@@ -12,10 +12,15 @@ const Header= ({title})=>{
 const styles = StyleSheet.create({
   header:{
     width : `100%`,
-    height:90
+    height:90,
+    paddingTop:36,
+    backgroundColor:"skyblue",
+    alignItems:'center',
+    justifyContent:"center",
   },
   headerTitle:{
-    width:"10%"
+    color:'black',
+    fontSize:18
   }
 })
 

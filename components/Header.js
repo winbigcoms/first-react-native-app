@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     height:90
   },
   headerTitle:{
-
+    width:"10%"
   }
 })
 

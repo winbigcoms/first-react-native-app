@@ -1,24 +1,40 @@
-import React from 'react';
-import {View,StyleSheet,Text, TextInput, Button} from 'react-native'
+import React,{useState} from 'react';
+import {View,StyleSheet,Text, TextInput, Button, TouchableNativeFeedback,Keyboard} from 'react-native'
 import Card from '../components/Card';
+import Inputs from '../components/Inputs';
 import color from '../constants/colors'
 const StartGameScreen = ({})=>{
+  const [enterValue, setEnterValue] = useState("");
+
+  const enterValueHandler = text=>{
+    setEnterValue(state=>text.replace(/[^0-9]/g,''));
+  }
   return (
-    <View style={Styles.screen}>
-      <Text style= {Styles.title}>게임을 시작하지</Text>
-      <Card style = {Styles.inpuContainer}>
-        <Text>숫자를 선택해보시지</Text>
-        <TextInput style={Styles.input}/>
-        <View style={Styles.buttonContainer}>
-          <View style={Styles.button} >
-            <Button title="up" onPress={()=>{}} color={color.purple}/>
+    <TouchableNativeFeedback onPress={()=>{Keyboard.dismiss()}}>
+      <View style={Styles.screen}>
+        <Text style= {Styles.title}>게임을 시작하지</Text>
+        <Card style = {Styles.inpuContainer}>
+          <Text>숫자를 선택해보시지</Text>
+          <Inputs style={Styles.input} 
+            blurOnSubmit 
+            autoCapitalize='none' 
+            autoCorrect={false}
+            keyboardType='number-pad'
+            maxLength={2}
+            onChangeText={enterValueHandler}
+            value={enterValue}
+            />
+          <View style={Styles.buttonContainer}>
+            <View style={Styles.button} >
+              <Button title="up" onPress={()=>{}} color={color.purple} />
+            </View>
+            <View style={Styles.button}>
+              <Button title="down" color={color.smoothBlue}/>
+            </View>
           </View>
-          <View style={Styles.button}>
-            <Button title="down" onPress={()=>{}} color={color.smoothBlue}/>
-          </View>
-        </View>
-      </Card>
-    </View>
+        </Card>
+      </View>
+    </TouchableNativeFeedback>
   )
 }
 
@@ -52,7 +68,8 @@ const Styles = StyleSheet.create({
   input:{
     borderWidth:1,
     width:200,
-    paddingHorizontal:15
+    paddingHorizontal:15,
+    textAlign:"center"
   },
   buttonContainer:{
     flexDirection:'row',

@@ -1,20 +1,51 @@
 import React,{useState} from 'react';
-import {View,StyleSheet,Text, TextInput, Button, TouchableNativeFeedback,Keyboard} from 'react-native'
+import {View,StyleSheet,Text, TextInput,Alert, Button, TouchableNativeFeedback,Keyboard} from 'react-native'
+import BodyText from '../components/BodyText';
 import Card from '../components/Card';
 import Inputs from '../components/Inputs';
+import NumberContainer from '../components/number';
 import color from '../constants/colors'
-const StartGameScreen = ({})=>{
+const StartGameScreen = ({onStart})=>{
   const [enterValue, setEnterValue] = useState("");
+  const [confirmed, setConfirmedState] = useState(false);
+  const [selectNumber, setSelectNumber] = useState();
+
 
   const enterValueHandler = text=>{
     setEnterValue(state=>text.replace(/[^0-9]/g,''));
   }
+
+  const resetInputHandler = ()=>{
+    setEnterValue(state=>"");
+  }
+  const confirmInputHandler = ()=>{
+    const choseNum = parseInt(enterValue);
+    if(isNaN(choseNum)||choseNum<=0||choseNum>99){
+      Alert.alert("숫자가 아니에여..","0 이상을 쓰라구요",[{text:"Okay",style:'destructive',onPress:resetInputHandler}])
+      return;
+    }
+    setConfirmedState(true);
+    setSelectNumber(state=> choseNum);
+    setEnterValue(state=>"");
+    Keyboard.dismiss();
+  }
+  let confirmedOutput;
+  if(confirmed){
+    confirmedOutput = (
+    <Card style={Styles.summeryContainer}>
+      <Text>you select</Text>
+      <NumberContainer>{selectNumber}</NumberContainer>
+      <Button title="start Game" onPress={()=>{onStart(selectNumber)}}/>
+    </Card>
+    )
+  }
+
   return (
     <TouchableNativeFeedback onPress={()=>{Keyboard.dismiss()}}>
       <View style={Styles.screen}>
         <Text style= {Styles.title}>게임을 시작하지</Text>
         <Card style = {Styles.inpuContainer}>
-          <Text>숫자를 선택해보시지</Text>
+          <BodyText>숫자를 선택해!</BodyText>
           <Inputs style={Styles.input} 
             blurOnSubmit 
             autoCapitalize='none' 
@@ -26,13 +57,14 @@ const StartGameScreen = ({})=>{
             />
           <View style={Styles.buttonContainer}>
             <View style={Styles.button} >
-              <Button title="up" onPress={()=>{}} color={color.purple} />
+              <Button title="reset" onPress={resetInputHandler} color={color.purple} />
             </View>
             <View style={Styles.button}>
-              <Button title="down" color={color.smoothBlue}/>
+              <Button title="confirm" onPress={confirmInputHandler} color={color.smoothBlue}/>
             </View>
           </View>
         </Card>
+        {confirmedOutput}
       </View>
     </TouchableNativeFeedback>
   )
@@ -46,24 +78,13 @@ const Styles = StyleSheet.create({
   },
   title:{
     fontSize:20,
-    marginVertical: 10
+    marginVertical: 10,
+    fontFamily:"open-sans-bold"
   },
   inpuContainer:{
     width: 300,
     maxWidth:`80%`,
     alignItems:"center",
-    justifyContent:"center",
-    shadowColor:'#333',
-    shadowOffset: {
-      width:0,
-      height:2
-    },
-    shadowRadius:6,
-    shadowOpacity:0.3,
-    backgroundColor:'#fff',
-    elevation:8,
-    padding:20,
-    borderRadius : 10
   },
   input:{
     borderWidth:1,
@@ -80,6 +101,16 @@ const Styles = StyleSheet.create({
   },
   button:{
     width:`40%`
+  },
+  chosen:{
+    color:`red`
+  },
+  summeryContainer:{
+    marginTop:20,
+    alignItems:"center",
+  },
+  text:{
+    fontFamily:"open-sans-bold"
   }
 });
 

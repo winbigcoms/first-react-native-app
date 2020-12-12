@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 
 const Card =(props)=>{
   return (
-    <View style={{...stlyes.card},{...props.style}}>
+    <View style={{...stlyes.card,...props.style}}>
       {props.children}
     </View>
   )
@@ -11,13 +11,14 @@ const Card =(props)=>{
 
 const stlyes = StyleSheet.create({
   card:{
-    alignItems:"center",
     shadowColor:'#333',
-    shadowOffset:{width:0,height:2},
+    shadowOffset:{
+      width:0,height:2
+    },
     shadowRadius:6,
     shadowOpacity:0.3,
     backgroundColor:'#fff',
-    elevation:5,
+    elevation:8,
     padding:20,
     borderRadius : 10
   }

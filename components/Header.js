@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,Text,StyleSheet}from 'react-native';
+import {View,Text,StyleSheet,Platform}from 'react-native';
 import BodyText from './BodyText';
 
 const Header= ({title})=>{
@@ -15,7 +15,9 @@ const styles = StyleSheet.create({
     width : `100%`,
     height:90,
     paddingTop:36,
-    backgroundColor:"skyblue",
+    backgroundColor:Platform.OS==="android"?"blue":"skyblue",
+    borderBottomColor:Platform.OS==="ios"?"#ccc":"transparent",
+    borderBottomWidth:Platform.OS==="ios"?1:0,
     alignItems:'center',
     justifyContent:"center",
     fontFamily:"open-sans-bold"

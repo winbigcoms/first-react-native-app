@@ -1,14 +1,18 @@
-import React,{useState} from 'react';
-import {View,StyleSheet,Text, TextInput,Alert, Button, TouchableNativeFeedback,Keyboard} from 'react-native'
+import React,{useEffect, useState} from 'react';
+import {View,StyleSheet,Text, TextInput,Alert,KeyboardAvoidingView, Button, TouchableNativeFeedback,Keyboard, Dimensions, ScrollView} from 'react-native'
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
 import Inputs from '../components/Inputs';
 import NumberContainer from '../components/number';
 import color from '../constants/colors'
+import CustomBtn from '../components/CustomBtn';
+
 const StartGameScreen = ({onStart})=>{
   const [enterValue, setEnterValue] = useState("");
   const [confirmed, setConfirmedState] = useState(false);
   const [selectNumber, setSelectNumber] = useState();
+  const [buttonWidth, setButtonWidth] = useState(Dimensions.get('window').width/4);
+  
 
 
   const enterValueHandler = text=>{
@@ -17,11 +21,28 @@ const StartGameScreen = ({onStart})=>{
 
   const resetInputHandler = ()=>{
     setEnterValue(state=>"");
+    setConfirmedState(false);
   }
+
+  useEffect(()=>{
+    const updateLayout=()=>{
+      setButtonWidth(Dimensions.get('window').width/4)
+    }
+    Dimensions.addEventListener('change',updateLayout);
+    return ()=>{
+      Dimensions.removeEventListener('change',updateLayout);
+    }
+  })
+
   const confirmInputHandler = ()=>{
     const choseNum = parseInt(enterValue);
     if(isNaN(choseNum)||choseNum<=0||choseNum>99){
-      Alert.alert("숫자가 아니에여..","0 이상을 쓰라구요",[{text:"Okay",style:'destructive',onPress:resetInputHandler}])
+      console.log("s")
+      Alert.alert(
+        "it is not num",
+        "over 0 please",
+        [{text:"Okay",style:'destructive',onPress:resetInputHandler}]
+      );
       return;
     }
     setConfirmedState(true);
@@ -35,13 +56,17 @@ const StartGameScreen = ({onStart})=>{
     <Card style={Styles.summeryContainer}>
       <Text>you select</Text>
       <NumberContainer>{selectNumber}</NumberContainer>
-      <Button title="start Game" onPress={()=>{onStart(selectNumber)}}/>
+      <CustomBtn customPress={()=>{onStart(selectNumber)}}>
+        start game
+      </CustomBtn>
     </Card>
     )
   }
 
   return (
-    <TouchableNativeFeedback onPress={()=>{Keyboard.dismiss()}}>
+    <ScrollView>
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>  
+       <TouchableNativeFeedback onPress={()=>{Keyboard.dismiss()}}>
       <View style={Styles.screen}>
         <Text style= {Styles.title}>게임을 시작하지</Text>
         <Card style = {Styles.inpuContainer}>
@@ -54,12 +79,12 @@ const StartGameScreen = ({onStart})=>{
             maxLength={2}
             onChangeText={enterValueHandler}
             value={enterValue}
-            />
+          />
           <View style={Styles.buttonContainer}>
-            <View style={Styles.button} >
+            <View style={{width:buttonWidth}} >
               <Button title="reset" onPress={resetInputHandler} color={color.purple} />
             </View>
-            <View style={Styles.button}>
+            <View style={{width:buttonWidth}} >
               <Button title="confirm" onPress={confirmInputHandler} color={color.smoothBlue}/>
             </View>
           </View>
@@ -67,6 +92,8 @@ const StartGameScreen = ({onStart})=>{
         {confirmedOutput}
       </View>
     </TouchableNativeFeedback>
+      </KeyboardAvoidingView>
+    </ScrollView>
   )
 }
 
@@ -82,8 +109,8 @@ const Styles = StyleSheet.create({
     fontFamily:"open-sans-bold"
   },
   inpuContainer:{
-    width: 300,
-    maxWidth:`80%`,
+    width: "80%",
+    minWidth:300,
     alignItems:"center",
   },
   input:{
@@ -100,7 +127,8 @@ const Styles = StyleSheet.create({
     marginVertical:10
   },
   button:{
-    width:`40%`
+    width:`40%`,
+    width:Dimensions.get('window').width / 4
   },
   chosen:{
     color:`red`
